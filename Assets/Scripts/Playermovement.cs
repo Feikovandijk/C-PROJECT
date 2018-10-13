@@ -5,11 +5,16 @@ using UnityEngine.SceneManagement;
 
 public class Playermovement : MonoBehaviour {
 
-	public float moveSpeed; 
+	public float moveSpeed;
+    public float moveSpeedWind;
+    public float moveSpeedStandard;
 	public GameObject deathParticles;
-	public float maxSpeed; 
+	public float maxSpeed;
+    public float maxSpeedWind;
+    public float maxSpeedStandard;
 
 	private Rigidbody rigidbody;
+    private bool inTrigger;
 	private Vector3 input;
 
 	private Vector3 spawn;
@@ -19,6 +24,7 @@ public class Playermovement : MonoBehaviour {
 	void Start () {
 		rigidbody=GetComponent<Rigidbody>();
 		spawn = transform.position;
+        moveSpeedStandard = moveSpeed;
 	}
 	
 	// Update is called once per frame
@@ -26,16 +32,20 @@ public class Playermovement : MonoBehaviour {
 		Instantiate(deathParticles, transform.position, Quaternion.identity);
 			transform.position = spawn;
 	}
-	void Update () {
-		input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
-		if (rigidbody.velocity.magnitude < maxSpeed)
-		{
-			rigidbody.AddForce(input*moveSpeed);
-		}
-		if (transform.position.y < -2)
-			Die ();
-	}
-	void OnCollisionEnter(Collision other){
+    void Update()
+    {
+        input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+        if (rigidbody.velocity.magnitude < maxSpeed)
+        {
+            rigidbody.AddForce(input * moveSpeed);
+        }
+        if (transform.position.y < -2)
+        {
+            Die();
+        }
+    }
+	void OnCollisionEnter(Collision other)
+    {
 		if (other.transform.tag == "Enemy")
 		{
 			Die ();
@@ -48,7 +58,17 @@ public class Playermovement : MonoBehaviour {
 		{
 			GameManager.instance.CompleteLevel();
 		}
-	}
+    }
 
-	
+    void OnTriggerEnter(Collider other){
+        if (other.transform.tag == "Wind")
+        {
+            maxSpeed = maxSpeedWind;
+            moveSpeed = moveSpeedWind;
+        }
+    }
+    void OnTriggerExit(Collider player){
+        maxSpeed = maxSpeedStandard;
+        moveSpeed = moveSpeedStandard;
+    }
 }
