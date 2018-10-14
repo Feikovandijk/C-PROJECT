@@ -3,35 +3,38 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class Playermovement : MonoBehaviour {
+public class Playermovement : MonoBehaviour
+{
 
-	public float moveSpeed;
+    public float moveSpeed;
     public float moveSpeedWind;
     public float moveSpeedStandard;
-	public GameObject deathParticles;
-	public float maxSpeed;
+    public GameObject deathParticles;
+    public float maxSpeed;
     public float maxSpeedWind;
     public float maxSpeedStandard;
 
-	private Rigidbody rigidbody;
+    private Rigidbody rigidbody;
     private bool inTrigger;
-	private Vector3 input;
+    private Vector3 input;
 
-	private Vector3 spawn;
+    private Vector3 spawn;
 
 
-	// Use this for initialization
-	void Start () {
-		rigidbody=GetComponent<Rigidbody>();
-		spawn = transform.position;
+    // Use this for initialization
+    void Start()
+    {
+        rigidbody = GetComponent<Rigidbody>();
+        spawn = transform.position;
         moveSpeedStandard = moveSpeed;
-	}
-	
-	// Update is called once per frame
-	void Die () {
-		Instantiate(deathParticles, transform.position, Quaternion.identity);
-			transform.position = spawn;
-	}
+    }
+
+    // Update is called once per frame
+    void Die()
+    {
+        Instantiate(deathParticles, transform.position, Quaternion.identity);
+        transform.position = spawn;
+    }
     void Update()
     {
         input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
@@ -44,31 +47,36 @@ public class Playermovement : MonoBehaviour {
             Die();
         }
     }
-	void OnCollisionEnter(Collision other)
+    void OnCollisionEnter(Collision other)
     {
-		if (other.transform.tag == "Enemy")
-		{
-			Die ();
-		}
-		if (other.transform.tag == "Trap")
-		{
-			Die ();
-		}
-		if (other.transform.tag == "Goal")
-		{
-			GameManager.instance.CompleteLevel();
-		}
-    }
-
-    void OnTriggerEnter(Collider other){
-        if (other.transform.tag == "Wind")
+        if (other.transform.tag == "Enemy")
         {
-            maxSpeed = maxSpeedWind;
-            moveSpeed = moveSpeedWind;
+            Die();
+        }
+        if (other.transform.tag == "Trap")
+        {
+            Die();
+        }
+        if (other.transform.tag == "Goal")
+        {
+            GameManager.instance.CompleteLevel();
         }
     }
-    void OnTriggerExit(Collider player){
-        maxSpeed = maxSpeedStandard;
-        moveSpeed = moveSpeedStandard;
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.transform.tag == "Wind")
+        {
+            //maxSpeed = maxSpeedWind;
+            //moveSpeed = moveSpeedWind;
+            rigidbody.drag = 20;
+        }
+    }
+    void OnTriggerExit(Collider player)
+    { 
+        //maxSpeed = maxSpeedStandard;
+        //moveSpeed = moveSpeedStandard;
+        rigidbody.drag = 0;
     }
 }
+
