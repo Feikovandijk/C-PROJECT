@@ -77,6 +77,7 @@ public class Playermovement : MonoBehaviour
         //maxSpeed = maxSpeedStandard;
         //moveSpeed = moveSpeedStandard;
         rigidbody.drag = 0;
+
     }
 }
 
